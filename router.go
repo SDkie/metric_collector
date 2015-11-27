@@ -1,0 +1,13 @@
+package main
+
+import (
+	"github.com/SDkie/metric_collector/controller"
+	"github.com/gin-gonic/gin"
+)
+
+func getRouter() *gin.Engine {
+	router := gin.Default()
+
+	router.GET("/", controller.Root)
+	return router
+}

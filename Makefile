@@ -8,6 +8,8 @@ print_error = echo -e "\e[1;31m$(1) $<\e[0m"
 
 # ENV Variables
 export GOPATH=$(shell pwd)/../../../..
+export PORT=8080
+export MODE=debug
 
 # Default target : Do nothing
 default:
