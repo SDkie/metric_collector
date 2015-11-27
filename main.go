@@ -1,15 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/SDkie/metric_collector/logger"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	fmt.Println("Hello World")
+	logger.Init()
+	logger.Info("Logger Successfully Initialize")
 	gin.SetMode(os.Getenv("MODE"))
+
 	router := getRouter()
 	router.Run(":" + os.Getenv("PORT"))
 }
