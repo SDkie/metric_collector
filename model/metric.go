@@ -13,7 +13,7 @@ type Metric struct {
 	Count    int64  `sql:"count" bson:"count" json:"count"`
 	Metric   string `sql:"metric" bson:"metric" json:"metric"`
 
-	CreatedAt time.Time `sql:"created_at" bson:"created_at" json:"-"`
+	CreatedAt time.Time `sql:"created_at" bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `sql:"updated_at" bson:"updated_at" json:"-"`
 	DeletedAt time.Time `sql:"deleted_at" bson:"deleted_at" json:"-"`
 }
