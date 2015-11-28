@@ -18,6 +18,8 @@ func Init() {
 	default:
 		log.Level = logrus.DebugLevel
 	}
+
+	Info("Logger Successfully Initialize")
 }
 
 func Debug(args ...interface{}) {
@@ -66,4 +68,10 @@ func Panic(args ...interface{}) {
 
 func Panicf(format string, args ...interface{}) {
 	log.Panicf(format, args...)
+}
+
+func PanicfIfError(err error, format string, args ...interface{}) {
+	if err != nil {
+		Panicf(format, args...)
+	}
 }

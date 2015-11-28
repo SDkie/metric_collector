@@ -21,6 +21,10 @@
 			"Rev": "3dac7b4f76f6e17fb39b768b89e3783d16e237fe"
 		},
 		{
+			"ImportPath": "github.com/streadway/amqp",
+			"Rev": "b4f3ceab0337f013208d31348b578d83c0064744"
+		},
+		{
 			"ImportPath": "golang.org/x/net/context",
 			"Rev": "55cccaa02af1a99c69ba3213e33468628b61be4b"
 		},

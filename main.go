@@ -4,12 +4,13 @@ import (
 	"os"
 
 	"github.com/SDkie/metric_collector/logger"
+	"github.com/SDkie/metric_collector/worker"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	logger.Init()
-	logger.Info("Logger Successfully Initialize")
+	worker.InitRabbitMQ()
 	gin.SetMode(os.Getenv("MODE"))
 
 	router := getRouter()

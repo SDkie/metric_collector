@@ -10,6 +10,7 @@ print_error = echo -e "\e[1;31m$(1) $<\e[0m"
 export GOPATH=$(shell pwd)/../../../..
 export PORT=8080
 export MODE=debug
+export RABBITMQ_URI=amqp://guest:guest@localhost:5672
 
 # Default target : Do nothing
 default:
