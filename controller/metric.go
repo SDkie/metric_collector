@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -29,35 +28,13 @@ func PostMetric(c *gin.Context) {
 	}
 
 	metric.CreatedAt = time.Now().UTC()
-	err = addToQueue(metric, worker.Q_ACCOUNT_NAME)
-	if err != nil {
-		logger.Err(err)
-		c.Error(err)
-	}
+	dataBytes, _ := json.Marshal(metric)
 
-	err = addToQueue(metric, worker.Q_DISTINCT_NAME)
-	if err != nil {
-		logger.Err(err)
-		c.Error(err)
-	}
-
-	err = addToQueue(metric, worker.Q_HOURLY_LOG)
-	if err != nil {
-		logger.Err(err)
-		c.Error(err)
-	}
-
-	c.JSON(http.StatusOK, metric)
-}
-
-func addToQueue(data *model.Metric, queueName string) error {
-	dataBytes, _ := json.Marshal(data)
-
-	err := worker.RabbitChannel.Publish(
-		"",        // exchange
-		queueName, // routing key
-		false,     // mandatory
-		false,     //immediate
+	err = worker.RabbitChannel.Publish(
+		worker.E_METRIC_EXCHANGE, // exchange
+		"",    // routing key
+		false, // mandatory
+		false, //immediate
 		amqp.Publishing{
 			DeliveryMode: amqp.Persistent,
 			ContentType:  "text/plain",
@@ -65,10 +42,10 @@ func addToQueue(data *model.Metric, queueName string) error {
 		})
 
 	if err != nil {
-		return fmt.Errorf("Error while adding task to Queue %s, %s", queueName, err)
-	} else {
-		return fmt.Errorf("Added task to Queue %s", queueName)
+		logger.Errf("Failed to Publish Message %s, %s", *metric, err)
+		c.String(http.StatusInternalServerError, "Failed to Publish Message.")
+		return
 	}
 
-	return err
+	c.JSON(http.StatusOK, metric)
 }

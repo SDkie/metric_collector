@@ -8,9 +8,10 @@ import (
 )
 
 const (
-	Q_DISTINCT_NAME = "distinct_name"
-	Q_HOURLY_LOG    = "hourly_log"
-	Q_ACCOUNT_NAME  = "account_name"
+	Q_DISTINCT_NAME   = "distinct_name"
+	Q_HOURLY_LOG      = "hourly_log"
+	Q_ACCOUNT_NAME    = "account_name"
+	E_METRIC_EXCHANGE = "metric_collector"
 )
 
 var RabbitConnection *amqp.Connection
@@ -32,14 +33,25 @@ func InitRabbitMQ() {
 	)
 	logger.PanicfIfError(err, "Error while setting Qos paramter for RabbitMQ, %s", err)
 
-	declareQueue(Q_ACCOUNT_NAME)
-	declareQueue(Q_DISTINCT_NAME)
-	declareQueue(Q_HOURLY_LOG)
+	err = RabbitChannel.ExchangeDeclare(
+		E_METRIC_EXCHANGE, // name
+		"fanout",          // type
+		true,              // durable
+		false,             // auto-deleted
+		false,             // internal
+		false,             // no-wait
+		nil,               // arguments
+	)
+	logger.PanicfIfError(err, "Failed to declare an exchange, %s", err)
+
+	declareAndBindQueue(Q_ACCOUNT_NAME)
+	declareAndBindQueue(Q_DISTINCT_NAME)
+	declareAndBindQueue(Q_HOURLY_LOG)
 
 	logger.Info("Rabbitmq Successfully Initialize")
 }
 
-func declareQueue(qName string) {
+func declareAndBindQueue(qName string) {
 	_, err := RabbitChannel.QueueDeclare(
 		qName, // name
 		true,  // durable
@@ -49,4 +61,12 @@ func declareQueue(qName string) {
 		nil,   // arguments
 	)
 	logger.PanicfIfError(err, "Error while declaring Queue - %s, %s", qName, err)
+
+	err = RabbitChannel.QueueBind(
+		qName,             // queue name
+		"",                // routing key
+		E_METRIC_EXCHANGE, // exchange
+		false,
+		nil)
+	logger.PanicfIfError(err, "Failed to bind queue - %s, %s", qName, err)
 }
