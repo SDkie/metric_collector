@@ -11,6 +11,7 @@ import (
 func main() {
 	logger.Init()
 	worker.InitRabbitMQ()
+	worker.InitCron()
 	gin.SetMode(os.Getenv("MODE"))
 
 	router := getRouter()

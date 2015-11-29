@@ -47,5 +47,6 @@ func PostMetric(c *gin.Context) {
 		return
 	}
 
+	logger.Infof("Message is published to exchange, %s", string(dataBytes))
 	c.JSON(http.StatusOK, metric)
 }
