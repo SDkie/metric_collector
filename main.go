@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/SDkie/metric_collector/db"
 	"github.com/SDkie/metric_collector/logger"
 	"github.com/SDkie/metric_collector/worker"
 	"github.com/gin-gonic/gin"
@@ -10,6 +11,7 @@ import (
 
 func main() {
 	logger.Init()
+	db.InitMongo()
 	worker.InitRabbitMQ()
 	worker.InitCron()
 	gin.SetMode(os.Getenv("MODE"))

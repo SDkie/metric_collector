@@ -38,6 +38,11 @@
 			"Rev": "d5acf1dac43705f8bfbb71d878e290e2bed3950b"
 		},
 		{
+			"ImportPath": "gopkg.in/mgo.v2",
+			"Comment": "r2015.10.05-1-g4d04138",
+			"Rev": "4d04138ffef2791c479c0c8bbffc30b34081b8d9"
+		},
+		{
 			"ImportPath": "gopkg.in/robfig/cron.v2",
 			"Comment": "v1-11-gbe2e0b0",
 			"Rev": "be2e0b0deed5a68ffee390b4583a13aff8321535"
