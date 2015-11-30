@@ -14,7 +14,7 @@ type WorkerHourlyLog struct {
 }
 
 func (h WorkerHourlyLog) Run() {
-	logger.Info("HourlyLog task started at ", time.Now().UTC())
+	logger.Info("HourlyLog worker started at ", time.Now().UTC())
 
 	ch, err := RabbitChannel.Consume(
 		Q_HOURLY_LOG, // queue
@@ -55,7 +55,7 @@ func (h WorkerHourlyLog) Run() {
 			logger.Info("Metric successfully added to mongo db")
 
 		case <-time.After(1 * time.Minute):
-			logger.Info("HourlyLog task completed at ", time.Now().UTC())
+			logger.Info("HourlyLog worker completed at ", time.Now().UTC())
 			return
 		}
 	}

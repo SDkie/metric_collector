@@ -10,7 +10,9 @@ func InitCron() {
 	jobrunner.Start()
 
 	err := jobrunner.Schedule("0 0 * * * *", WorkerHourlyLog{})
-	logger.PanicfIfError(err, "Error while scheduling Worker for HourlyLog, %s", err)
+	logger.PanicfIfError(err, "Error while scheduling Worker HourlyLog, %s", err)
+	err = jobrunner.Schedule("0 0 * * * *", WorkerAccountName{})
+	logger.PanicfIfError(err, "Error while scheduling Worker AccountName, %s", err)
 }
 
 func JobHtml(c *gin.Context) {

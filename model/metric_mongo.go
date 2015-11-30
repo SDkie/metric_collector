@@ -15,6 +15,10 @@ type MetricMongo struct {
 	Metric `bson:",inline"`
 }
 
+func InitMongo() {
+	db.InitMongo()
+}
+
 func (m *MetricMongo) Insert() error {
 	return db.MgCreate(METRIC_MONGO_COLLECTION, *m)
 }

@@ -7,7 +7,7 @@ import "time"
 //go:generate easytags metric.go sql
 
 type Metric struct {
-	Username string `sql:"username" bson:"username" json:"username"`
+	Username string `sql:"username;unique" bson:"username" json:"username"`
 	Count    int64  `sql:"count" bson:"count" json:"count"`
 	Metric   string `sql:"metric" bson:"metric" json:"metric"`
 
