@@ -9,9 +9,9 @@ import (
 func InitCron() {
 	jobrunner.Start()
 
-	err := jobrunner.Schedule("0 0 * * * *", WorkerHourlyLog{})
+	err := jobrunner.Schedule("@every 1h", WorkerHourlyLog{})
 	logger.PanicfIfError(err, "Error while scheduling Worker HourlyLog, %s", err)
-	err = jobrunner.Schedule("0 0 * * * *", WorkerAccountName{})
+	err = jobrunner.Schedule("@every 15m", WorkerAccountName{})
 	logger.PanicfIfError(err, "Error while scheduling Worker AccountName, %s", err)
 }
 

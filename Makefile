@@ -12,8 +12,8 @@ export PORT=8080
 export MODE=debug
 export RABBITMQ_URI=amqp://guest:guest@localhost:5672
 export MG_URI=mongodb://localhost:27017/metric_collector
-export PG_URL=host=localhost user=kumar password=s dbname=metric_collector
 export MG_DB_NAME=metric_collector
+export PG_URL=host=localhost user=kumar password=s dbname=metric_collector
 
 # Default target : Do nothing
 default:
