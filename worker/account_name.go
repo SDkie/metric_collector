@@ -10,10 +10,11 @@ import (
 )
 
 type WorkerAccountName struct {
+	name string
 }
 
 func (h WorkerAccountName) Run() {
-	logger.Info("AccountName worker started at ", time.Now().UTC())
+	logger.Infof("[%s] worker started at %s", h.name, time.Now().UTC())
 
 	ch, err := RabbitChannel.Consume(
 		Q_ACCOUNT_NAME, // queue
@@ -25,7 +26,7 @@ func (h WorkerAccountName) Run() {
 		nil,            // args
 	)
 	if err != nil {
-		logger.Errf("Error while creating Consume channel in AccountName worker , %s", err)
+		logger.Errf("[%s] Error while creating Consume channel, %s", h.name, err)
 		return
 	}
 
@@ -33,29 +34,29 @@ func (h WorkerAccountName) Run() {
 		select {
 
 		case msg := <-ch:
-			logger.Infof("Received metric: %s", msg.Body)
+			logger.Infof("[%s] Received metric: %s", h.name, msg.Body)
 			metricData := new(model.MetricPg)
 
 			err = json.Unmarshal(msg.Body, metricData)
 			if err != nil {
-				logger.Errf("Error while doing JSON Unmarshal, %s", err)
+				logger.Errf("[%s] Error while doing JSON Unmarshal, %s", h.name, err)
 				msg.Reject(true)
 				break
 			}
 
 			err = metricData.Insert()
 			if err == nil {
-				logger.Info("Metric successfully added to psql")
+				logger.Infof("[%s] Metric successfully added to psql - %s", h.name, msg.Body)
 				msg.Ack(false)
 			} else if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
-				logger.Infof("Account Name, %s already exists in DB", metricData.Username)
+				logger.Infof("[%s] %s already exists in psql", h.name, metricData.Username)
 				msg.Ack(false)
 			} else {
-				logger.Errf("Error while Inserting data into psql, %s", err)
+				logger.Errf("[%s] Error while Inserting data into psql, %s", h.name, err)
 				msg.Reject(true)
 			}
 		case <-time.After(1 * time.Minute):
-			logger.Info("HourlyLog worker completed at ", time.Now().UTC())
+			logger.Info("[%s] Worker completed at %s", h.name, time.Now().UTC())
 			return
 		}
 	}

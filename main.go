@@ -14,7 +14,7 @@ func main() {
 	model.Init()
 	worker.InitRabbitMQ()
 	worker.InitCron()
-	gin.SetMode(os.Getenv("MODE"))
+	gin.SetMode(os.Getenv("GIN_MODE"))
 
 	router := getRouter()
 	router.Run(":" + os.Getenv("PORT"))

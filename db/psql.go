@@ -15,8 +15,9 @@ func InitPg() {
 	db, err = gorm.Open("postgres", os.Getenv("PG_URL"))
 	logger.PanicfIfError(err, "Error while connecting to PostgreSQL, %s", err)
 
-	db.LogMode(true)
+	db.LogMode(false)
 	db.SingularTable(true)
+	logger.Info("PostgreSQL Successfully Initialize")
 }
 
 func GetPg() *gorm.DB {

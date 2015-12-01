@@ -13,6 +13,7 @@ func InitCron() {
 	logger.PanicfIfError(err, "Error while scheduling Worker HourlyLog, %s", err)
 	err = jobrunner.Schedule("@every 15m", WorkerAccountName{})
 	logger.PanicfIfError(err, "Error while scheduling Worker AccountName, %s", err)
+	logger.Info("All the workers are Initialize")
 }
 
 func JobHtml(c *gin.Context) {

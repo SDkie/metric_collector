@@ -11,10 +11,11 @@ import (
 )
 
 type WorkerHourlyLog struct {
+	name string
 }
 
 func (h WorkerHourlyLog) Run() {
-	logger.Info("HourlyLog worker started at ", time.Now().UTC())
+	logger.Infof("[%s] worker started at %s", h.name, time.Now().UTC())
 
 	ch, err := RabbitChannel.Consume(
 		Q_HOURLY_LOG, // queue
@@ -26,7 +27,7 @@ func (h WorkerHourlyLog) Run() {
 		nil,          // args
 	)
 	if err != nil {
-		logger.Errf("Error while creating Consume channel in HourlyLog worker , %s", err)
+		logger.Errf("[%s] Error while creating Consume channel in HourlyLog worker, %s", h.name, err)
 		return
 	}
 
@@ -34,28 +35,28 @@ func (h WorkerHourlyLog) Run() {
 		select {
 
 		case msg := <-ch:
-			logger.Infof("Received metric: %s", msg.Body)
+			logger.Infof("[%s] Received metric: %s", h.name, msg.Body)
 			metricData := new(model.MetricMongo)
 			metricData.Id = bson.NewObjectId()
 
 			err = json.Unmarshal(msg.Body, metricData)
 			if err != nil {
-				logger.Errf("Error while doing JSON Unmarshal, %s", err)
+				logger.Errf("[%s] Error while doing JSON Unmarshal, %s", h.name, err)
 				msg.Reject(true)
 				break
 			}
 
 			err = metricData.Insert()
 			if err != nil {
-				logger.Errf("Error while Inserting data into Mongo, %s", err)
+				logger.Errf("[%s] Error while Inserting data into Mongo, %s", h.name, err)
 				msg.Reject(true)
 				break
 			}
 			msg.Ack(false)
-			logger.Info("Metric successfully added to mongo db")
+			logger.Infof("[%s] Metric successfully added to mongoDb - %s", h.name, msg.Body)
 
 		case <-time.After(1 * time.Minute):
-			logger.Info("HourlyLog worker completed at ", time.Now().UTC())
+			logger.Infof("[%s] Worker completed at %s", h.name, time.Now().UTC())
 			return
 		}
 	}
