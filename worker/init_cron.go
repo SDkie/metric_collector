@@ -9,10 +9,12 @@ import (
 func InitCron() {
 	jobrunner.Start()
 
-	err := jobrunner.Schedule("@every 1h", WorkerHourlyLog{})
+	err := jobrunner.Schedule("@every 1h", WorkerHourlyLog{"WorkerHourlyLog"})
 	logger.PanicfIfError(err, "Error while scheduling Worker HourlyLog, %s", err)
-	err = jobrunner.Schedule("@every 15m", WorkerAccountName{})
+	err = jobrunner.Schedule("@every 15m", WorkerAccountName{"WorkerAccountName"})
 	logger.PanicfIfError(err, "Error while scheduling Worker AccountName, %s", err)
+	err = jobrunner.Schedule("@every 15m", WorkerDistinctName{"WorkerDistinctName"})
+	logger.PanicfIfError(err, "Error while scheduling Worker DistinctName, %s", err)
 	logger.Info("All the workers are Initialize")
 }
 

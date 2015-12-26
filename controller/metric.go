@@ -28,6 +28,7 @@ func PostMetric(c *gin.Context) {
 	}
 
 	metric.CreatedAt = time.Now().UTC()
+	metric.UpdatedAt = metric.CreatedAt
 	dataBytes, _ := json.Marshal(metric)
 
 	err = worker.RabbitChannel.Publish(

@@ -56,7 +56,7 @@ func (h WorkerAccountName) Run() {
 				msg.Reject(true)
 			}
 		case <-time.After(1 * time.Minute):
-			logger.Info("[%s] Worker completed at %s", h.name, time.Now().UTC())
+			logger.Infof("[%s] Worker completed at %s", h.name, time.Now().UTC())
 			return
 		}
 	}
