@@ -15,6 +15,7 @@ export RABBITMQ_URI=amqp://guest:guest@localhost:5672
 export MG_URI=mongodb://localhost:27017/metric_collector
 export MG_DB_NAME=metric_collector
 export PG_URL=host=localhost user=kumar password=s dbname=metric_collector
+export REDIS_URL=localhost:6379
 
 # Default target : Do nothing
 default:
