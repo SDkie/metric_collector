@@ -2,6 +2,7 @@ package worker
 
 import (
 	"encoding/json"
+	"strconv"
 	"time"
 
 	"github.com/SDkie/metric_collector/logger"
@@ -14,6 +15,16 @@ type WorkerDistinctName struct {
 
 func (d WorkerDistinctName) Run() {
 	logger.Infof("[%s] worker started at %s", d.name, time.Now().UTC())
+
+	currentDate := time.Now().UTC()
+	// distinct_name:YYYY:MM
+	monthlyBucketKey := "distinct_name:" + strconv.Itoa(currentDate.Year()) + ":" + strconv.Itoa(int(currentDate.Month())-1)
+	// distinct_name:YYYY:MM:DD
+	dailyBucketKey := monthlyBucketKey + ":" + strconv.Itoa(currentDate.Day())
+
+	// Metrics that are older than 30 days are merged into a monthly bucket, then cleared.
+	// The go rountine might fail, so I am running it multiple times in a day
+	go model.MergeToMonthlyBucket(dailyBucketKey, monthlyBucketKey)
 
 	ch, err := RabbitChannel.Consume(
 		Q_DISTINCT_NAME, // queue

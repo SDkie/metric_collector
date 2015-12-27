@@ -1,30 +1,40 @@
 package model
 
 import (
-	"time"
-
 	"strconv"
 
 	"github.com/SDkie/metric_collector/db"
+	"github.com/SDkie/metric_collector/logger"
 	"github.com/garyburd/redigo/redis"
 )
 
 type MetricRedis struct {
-	Metric
+	MetricStruct
 }
 
 func InitRedis() {
 	db.InitRedis()
-
-	// Initialize current_date Key in Redis
-	_, err := redis.String(db.GetRedisConnection().Do("GET", "current_date"))
-	if err != nil {
-		db.GetRedisConnection().Do("SET", "current_date", time.Now().Format("2006:01:02"))
-	}
 }
 
 func (m *MetricRedis) Insert() error {
-	dailyBucket := "distinct_name:" + strconv.Itoa(m.CreatedAt.Day())
+	// distinct_name:YYYY:MM:DD
+	dailyBucket := "distinct_name:" + strconv.Itoa(m.CreatedAt.Year()) + ":" + strconv.Itoa(int(m.CreatedAt.Month())) + ":" + strconv.Itoa(m.CreatedAt.Day())
 	_, err := db.GetRedisConnection().Do("SADD", dailyBucket, m.Metric)
 	return err
+}
+
+func MergeToMonthlyBucket(dailyBucketKey, monthlyBucketKey string) {
+	logger.Debugf("Merge Daily Bucket %s -> Monthly Bucket %s", dailyBucketKey, monthlyBucketKey)
+	count, err := redis.Int(db.GetRedisConnection().Do("SCARD", dailyBucketKey))
+	if count == 0 || err != nil {
+		return
+	}
+
+	_, err = db.GetRedisConnection().Do("SUNIONSTORE", monthlyBucketKey, monthlyBucketKey, dailyBucketKey)
+	if err == nil {
+		logger.Errf("Error while during SUNIONSTORE %s", err)
+		return
+	}
+
+	db.GetRedisConnection().Do("DEL", dailyBucketKey)
 }

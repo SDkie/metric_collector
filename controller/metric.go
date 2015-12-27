@@ -13,7 +13,7 @@ import (
 )
 
 func PostMetric(c *gin.Context) {
-	metric := new(model.Metric)
+	metric := new(model.MetricStruct)
 	err := c.BindJSON(metric)
 	if err != nil {
 		logger.Errf("Error while JSON Binding, %s", err)

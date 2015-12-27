@@ -11,8 +11,8 @@ import (
 const METRIC_MONGO_COLLECTION = "metric_collector"
 
 type MetricMongo struct {
-	Id     bson.ObjectId `bson:"_id" json:"id"`
-	Metric `bson:",inline"`
+	Id           bson.ObjectId `bson:"_id" json:"id"`
+	MetricStruct `bson:",inline"`
 }
 
 func InitMongo() {

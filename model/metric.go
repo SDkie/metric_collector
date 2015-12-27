@@ -6,7 +6,7 @@ import "time"
 //go:generate easytags metric.go bson
 //go:generate easytags metric.go sql
 
-type Metric struct {
+type MetricStruct struct {
 	Username string `sql:"username;unique" bson:"username" json:"username"`
 	Count    int64  `sql:"count" bson:"count" json:"count"`
 	Metric   string `sql:"metric" bson:"metric" json:"metric"`

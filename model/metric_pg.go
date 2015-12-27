@@ -7,7 +7,7 @@ import "github.com/SDkie/metric_collector/db"
 
 type MetricPg struct {
 	Id int64 `sql:"id" gorm:"primary_key" json:"id"`
-	Metric
+	MetricStruct
 }
 
 func InitPg() {
