@@ -35,6 +35,7 @@ clean:
 # Compile sources and build binary
 install: clean
 	@go generate github.com/SDkie/metric_collector/model
+	@go generate github.com/SDkie/metric_collector/http_metric
 	@echo "--> installing..."
 	@go install $(PACKAGE) || ($(call print_error,Compilation error) && exit 1)
 	@echo "Install OK"

@@ -6,6 +6,7 @@ import (
 	"github.com/SDkie/metric_collector/logger"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var mongoSession *mgo.Session
@@ -49,4 +50,17 @@ func MgCreate(c string, data interface{}) error {
 	session := GetMongoSession()
 	defer session.Close()
 	return session.DB(dbName).C(c).Insert(data)
+}
+
+func MgFindOne(c string, find *bson.M, data interface{}) error {
+	session := GetMongoSession()
+	defer session.Close()
+	return session.DB(dbName).C(c).Find(find).One(data)
+}
+
+func MgFindAndModify(c string, find *bson.M, change mgo.Change, data interface{}) error {
+	session := GetMongoSession()
+	defer session.Close()
+	_, err := session.DB(dbName).C(c).Find(find).Apply(change, data)
+	return err
 }

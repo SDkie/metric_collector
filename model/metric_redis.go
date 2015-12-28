@@ -24,15 +24,15 @@ func (m *MetricRedis) Insert() error {
 }
 
 func MergeToMonthlyBucket(dailyBucketKey, monthlyBucketKey string) {
-	logger.Debugf("Merge Daily Bucket %s -> Monthly Bucket %s", dailyBucketKey, monthlyBucketKey)
 	count, err := redis.Int(db.GetRedisConnection().Do("SCARD", dailyBucketKey))
 	if count == 0 || err != nil {
 		return
 	}
 
+	logger.Debugf("Merge Daily Bucket %s -> Monthly Bucket %s", dailyBucketKey, monthlyBucketKey)
 	_, err = db.GetRedisConnection().Do("SUNIONSTORE", monthlyBucketKey, monthlyBucketKey, dailyBucketKey)
-	if err == nil {
-		logger.Errf("Error while during SUNIONSTORE %s", err)
+	if err != nil {
+		logger.Errf("Error during SUNIONSTORE %s", err.Error())
 		return
 	}
 

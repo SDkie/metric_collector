@@ -12,6 +12,6 @@ type MetricStruct struct {
 	Metric   string `sql:"metric" bson:"metric" json:"metric"`
 
 	CreatedAt time.Time `sql:"created_at" bson:"created_at" json:"created_at"`
-	UpdatedAt time.Time `sql:"updated_at" bson:"updated_at" json:"-"`
+	UpdatedAt time.Time `sql:"updated_at" bson:"updated_at" json:"updated_at"`
 	DeletedAt time.Time `sql:"deleted_at" bson:"deleted_at" json:"-"`
 }
